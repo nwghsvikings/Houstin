@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
@@ -13,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Turret;
 
 
 @TeleOp
-public class Main extends LinearOpMode {
+public class SubsystemBased extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -36,8 +35,8 @@ public class Main extends LinearOpMode {
             boolean LT = gamepad1.left_trigger > 0.1 && previousGamepad1.left_trigger < 0.1;
             previousGamepad1.copy(gamepad1);
 
-            drivetrain.run(gamepad1.left_stick_x,gamepad1.left_stick_y, gamepad1.right_stick_x);
-            if (RB){
+            drivetrain.run(gamepad1.left_stick_x,gamepad1.left_stick_y, gamepad1.right_stick_x,1-(gamepad1.left_trigger/2));
+            if (LB){
                 switch (flyWheel.getState()){
                     case OFF:
                         flyWheel.setState(FlyWheel.States.ON);
@@ -47,35 +46,17 @@ public class Main extends LinearOpMode {
                         break;
                 }
             }
-            if (LB){
-                switch (turret.getState()){
-                    case OFF:
-                        turret.setState(Turret.States.ON);
-                        break;
-                    case ON:
-                        turret.setState(Turret.States.OFF);
-                        break;
-                }
-            }
-            if (RT){
+            if (RB){
                 transfer.setState(Transfer.States.SHOOTING);
             }
-            if (LT){
-                switch (intake.getState()){
-                    case ON:
-                        intake.setState(Intake.States.OFF);
-                        break;
-                    case OFF:
-                        intake.setState(Intake.States.ON);
-                        break;
-                }
-            }
+
             if (gamepad1.dpad_left){
                 turret.changePower(-1);
             }
             if (gamepad1.dpad_right){
                 turret.changePower(1);
             }
+            intake.setPower(gamepad1.right_trigger);
 
             flyWheel.run();
             turret.run();

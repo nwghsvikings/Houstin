@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
+@Config
 public class Turret {
     public enum States{
         ON,
@@ -13,11 +14,11 @@ public class Turret {
     States currentStates=States.OFF;
     DcMotor turret;
     public double targetPos = 0;
-    public static double kP = 0.005;
+    public static double kP = 0.0005;
     public static double sensitivity = 1;
 
     public Turret(HardwareMap hardwaremap){
-        turret=hardwaremap.dcMotor.get("turret");
+        turret=hardwaremap.dcMotor.get("gears");
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
     public void changePower(double input){

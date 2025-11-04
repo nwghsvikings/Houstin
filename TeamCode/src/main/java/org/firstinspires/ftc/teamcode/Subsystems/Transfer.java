@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
+@Config
 public class Transfer {
     public enum States {
         RESTING,
@@ -12,7 +13,7 @@ public class Transfer {
     }
     States currentState = States.RESTING;
     long timeSnapshot = System.currentTimeMillis();
-    long waitTime = 500;
+    public static long waitTime = 400;
     public void setState(States newState) {
         if (newState == States.SHOOTING && currentState != States.SHOOTING){
             timeSnapshot = System.currentTimeMillis();

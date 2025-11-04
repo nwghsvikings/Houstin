@@ -1,33 +1,21 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
+@Config
 public class Intake {
-   public enum States{
-       ON,
-       OFF
-   }
-   States currentState = States.OFF;
     DcMotor intake;
+    double power = .5;
+    public static double powerSensitivity = 0.5;
+    public void setPower(double input){
+        power = powerSensitivity * input;
+    }
     public Intake(HardwareMap hardwareMap){
         intake = hardwareMap.dcMotor.get("intake");
     }
-    public void setState(States newState){
-        currentState = newState;
-    }
-    public States getState(){
-        return currentState;
-    }
     public void run(){
-        switch (currentState){
-            case ON:
-                intake.setPower(1);
-                break;
-            case OFF:
-                intake.setPower(0);
-                break;
-        }
+        intake.setPower(power);
     }
 
 }
