@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Turret {
     DcMotor turret;
     public static double kP = 0.0005;
-
+    public static double maxPower =.15;
     public Turret(HardwareMap hardwaremap){
         turret=hardwaremap.dcMotor.get("gears");
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -17,6 +17,9 @@ public class Turret {
     public void run(double xError){
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         double power = xError * kP;
+        if (Math.abs(power) > maxPower){
+            power = Math.signum(power) * maxPower;
+        }
         turret.setPower(power);
     }
     public void status(Telemetry telemetry){
