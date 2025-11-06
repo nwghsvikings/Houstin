@@ -12,7 +12,7 @@ public class FlyWheel {
    States currentState = States.OFF;
     DcMotor flywheel;
     DcMotor flywheel2;
-    public static double power = .75;
+    public static double power = .85;
     public FlyWheel(HardwareMap hardwareMap){
         flywheel = hardwareMap.dcMotor.get("shooter");
         flywheel2 = hardwareMap.dcMotor.get("shooter2");
