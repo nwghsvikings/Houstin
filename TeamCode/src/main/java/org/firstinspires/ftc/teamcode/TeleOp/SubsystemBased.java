@@ -26,7 +26,7 @@ public class SubsystemBased extends LinearOpMode {
         Intake intake = new Intake(hardwareMap);
         Transfer transfer = new Transfer(hardwareMap);
         TeamColor teamColor = new TeamColor();
-        Camera camera = new Camera(hardwareMap);
+        Camera camera = new Camera(hardwareMap,teamColor.getColor());
 
         if (isStopRequested()) return;
         Gamepad previousGamepad1 = new Gamepad();
@@ -67,6 +67,7 @@ public class SubsystemBased extends LinearOpMode {
 
             flyWheel.run();
             camera.update(telemetry);
+            camera.setColor(teamColor.getColor());
             turret.run(camera.getXError());
             turret.status(telemetry);
             intake.run();
