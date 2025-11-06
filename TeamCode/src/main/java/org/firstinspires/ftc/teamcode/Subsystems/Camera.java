@@ -23,7 +23,7 @@ public class Camera {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100); // This sets how often we ask Limelight for data (100 times per second)
         limelight.start(); // This tells Limelight to start looking!
-        limelight.pipelineSwitch(11); // Switch to pipeline number 11
+        limelight.pipelineSwitch(8); // Switch to pipeline number
         teamColor = inputtedColor;
     }
     public void setColor(TeamColor.Colors inputtedColor){
@@ -40,16 +40,16 @@ public class Camera {
     public void update(Telemetry telemetry){
         LLResult result = limelight.getLatestResult();
         if (result != null && result.isValid()) {
-            for (int i = 0; i < result.getBarcodeResults().size(); i++){
-                String code = result.getBarcodeResults().get(i).getData();
-                if ((code.equals("20")  || code.equals("24")) && teamColor.equals(getTagColor(code))){
+          //  for (int i = 0; i < result.getBarcodeResults().size(); i++){
+          //      String code = result.getBarcodeResults().get(i).getData();
+            //    if ((code.equals("20")  || code.equals("24")) && teamColor.equals(getTagColor(code))){
                     double tx = result.getTx(); // How far left or right the target is (degrees)
                     double ty = result.getTy(); // How far up or down the target is (degrees)
                     double ta = result.getTa(); // How big the target looks (0%-100% of the image)
                     xError = tx;
                     area = ta;
-                }
-            }
+            //    }
+        //    }
 
         } else {
             xError = 0;
