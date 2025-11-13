@@ -73,6 +73,7 @@ public class SubsystemBased extends LinearOpMode {
             intake.run();
             transfer.run(telemetry);
             teamColor.status(telemetry);
+            flyWheel.status(telemetry);
             telemetry.addData("y",y);
             telemetry.addData("rx",rx);
             telemetry.update();
