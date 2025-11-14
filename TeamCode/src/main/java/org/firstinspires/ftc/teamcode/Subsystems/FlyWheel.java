@@ -43,6 +43,10 @@ public class FlyWheel {
                power = 0;
                 break;
         }
+        if(Math.abs(power)>maxPower)
+        {
+            power=Math.signum(power)*maxPower;
+        }
         flywheel.setPower(power);
         flywheel2.setPower(-flywheel.getPower());
     }

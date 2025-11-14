@@ -8,10 +8,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class Turret {
     DcMotor turret;
-    public static double kP =-.07;
+    public static double kP =-.05;
     public static double maxPower =.3;
-    public static int maxLeft=-10000;
-    public static int maxRight=10000;
+    public static int maxLeft=667;
+    public static int maxRight=-667;
     public Turret(HardwareMap hardwaremap){
         turret=hardwaremap.dcMotor.get("gears");
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -23,11 +23,11 @@ public class Turret {
         if (Math.abs(power) > maxPower){
             power = Math.signum(power) * maxPower;
         }
-        if (xError > 0 && turret.getCurrentPosition() > maxRight) {
-            return;
+        if (xError > 0 && turret.getCurrentPosition() < maxRight) {
+            power = 0;
         }
-        if (xError < 0 && turret.getCurrentPosition() < maxLeft) {
-            return;
+        if (xError <  0 && turret.getCurrentPosition() > maxLeft) {
+            power = 0;
         }
         turret.setPower(power);
     }
