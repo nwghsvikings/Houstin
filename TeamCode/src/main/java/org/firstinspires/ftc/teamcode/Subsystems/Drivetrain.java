@@ -2,11 +2,9 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.opencv.core.Mat;
 
 public class Drivetrain {
     DcMotor fL;
@@ -34,6 +32,11 @@ public class Drivetrain {
         bL.setPower(backLeftPower);
         fR.setPower(frontRightPower);
         bR.setPower(backRightPower);
+    }
+    public void status(Telemetry telemetry) {
+        telemetry.addData("Left Odometry (BL)?", bL.getCurrentPosition());
+        telemetry.addData("Right Odometry (FR)?", fR.getCurrentPosition());
+        telemetry.addData("Back Odometry (BR)?", bR.getCurrentPosition());
     }
 
 }

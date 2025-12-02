@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -17,7 +16,7 @@ public class FlyWheel {
    States currentState = States.OFF;
     DcMotorEx flywheel;
     DcMotorEx flywheel2;
-    public static double maxPower = .85;
+    public static double maxPower = 1.0;
     public static double targetVelocity=1000;
     public static double kP = 0.005;
     public FlyWheel(HardwareMap hardwareMap){

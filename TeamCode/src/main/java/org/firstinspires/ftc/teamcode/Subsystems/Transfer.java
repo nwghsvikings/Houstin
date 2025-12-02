@@ -44,7 +44,7 @@ public class Transfer {
                 break;
             case SHOOTING:
                 push.setPosition(shootingPos);
-                block.setPosition(1-shootingPos);
+                block.setPosition(.6-shootingPos);
                 if (System.currentTimeMillis() - timeSnapshot > waitTime){
                     currentState = States.RESTING;
                 }

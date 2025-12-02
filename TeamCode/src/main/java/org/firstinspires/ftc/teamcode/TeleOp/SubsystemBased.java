@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Camera;
+import org.firstinspires.ftc.teamcode.Subsystems.ColorSensors;
 import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.Subsystems.FlyWheel;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
@@ -27,19 +28,22 @@ public class SubsystemBased extends LinearOpMode {
         Transfer transfer = new Transfer(hardwareMap);
         TeamColor teamColor = new TeamColor();
         Camera camera = new Camera(hardwareMap,teamColor.getColor());
-
+        ColorSensors colorsensors = new ColorSensors(hardwareMap);
         if (isStopRequested()) return;
         Gamepad previousGamepad1 = new Gamepad();
         while (opModeIsActive()) {
+
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double rx = gamepad1.right_stick_x * 1.1; // Counteract imperfect strafing
             boolean RB = gamepad1.right_bumper && !previousGamepad1.right_bumper;
             boolean LB = gamepad1.left_bumper && !previousGamepad1.left_bumper;
             boolean RT = gamepad1.right_trigger > 0.1 && previousGamepad1.right_trigger < 0.1;
             boolean LT = gamepad1.left_trigger > 0.1 && previousGamepad1.left_trigger < 0.1;
-            boolean x = gamepad1.x && !previousGamepad1.x;
+            boolean x = gamepad1.x;
+            boolean back = gamepad1.back && !previousGamepad1.back;
+            boolean b = gamepad1.b;
             previousGamepad1.copy(gamepad1);
-            if (x){
+            if (back){
                 switch (teamColor.getColor()){
                     case RED:
                         teamColor.setColor(TeamColor.Colors.BLUE);
@@ -60,10 +64,22 @@ public class SubsystemBased extends LinearOpMode {
                         break;
                 }
             }
-            if (RB){
+            if (RB | (gamepad1.right_trigger > 0.1 & colorsensors.BallDetected() & flyWheel.getState() == FlyWheel.States.ON)){
                 transfer.setState(Transfer.States.SHOOTING);
             }
-            intake.setPower(gamepad1.right_trigger);
+            if((transfer.getStates() != Transfer.States.SHOOTING) & !x & !b) {
+                intake.setPower(gamepad1.right_trigger);
+            }
+            else if (x) {
+                intake.setPower(1.0);
+            }
+            else if (b & !x & gamepad1.right_trigger < 0.1) {
+                intake.setPower(-1.0);
+            }
+            else {
+                intake.setPower(0);
+            }
+
 
             flyWheel.run();
             camera.update(telemetry);
@@ -76,6 +92,9 @@ public class SubsystemBased extends LinearOpMode {
             flyWheel.status(telemetry);
             telemetry.addData("y",y);
             telemetry.addData("rx",rx);
+            colorsensors.status(telemetry);
+            telemetry.addData("Ball Detected:", colorsensors.BallDetected());
+            drivetrain.status(telemetry);
             telemetry.update();
         }
     }
