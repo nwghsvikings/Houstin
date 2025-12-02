@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.TeamColor;
 @Config
 @Autonomous(name = "AutoRR_Left", group = "Robot")
 public class DECODE_9_Ball_Auto_Test extends LinearOpMode {
-    public static String GOAL = "RED"; //CHANGE TO RED OR BLUE FOR GOAL
+    public static TeamColor.Colors GOAL = TeamColor.Colors.RED;
 
     public static int R = 1;
     public static int A = 0;
@@ -36,8 +36,8 @@ public class DECODE_9_Ball_Auto_Test extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        if(GOAL.equals("BLUE")) {R=-1;A=-180;A2=-1*(A/2);}
-        if(GOAL.equals("RED")) {R=1;A=0;A2=-1*(A/2);}
+        if(GOAL == TeamColor.Colors.BLUE) {R=-1;A=-180;A2=-1*(A/2);}
+        if(GOAL == TeamColor.Colors.RED) {R=1;A=0;A2=-1*(A/2);}
 
         Pose2d initialPose = new Pose2d(-60.4, 37*R, Math.toRadians(90)); //STARTING SPOT
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
@@ -79,7 +79,7 @@ public class DECODE_9_Ball_Auto_Test extends LinearOpMode {
         TrajectoryActionBuilder Shoot3 = InitializeWorld.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(-23.5,23.5*R), Math.toRadians(135+A2))
                 .stopAndAdd(new DECODE_9_Ball_Auto_Test.FlyWheelAction(flywheel,flywheel2,0.85))//FLYWHEEL ON
-                .stopAndAdd(new DECODE_9_Ball_Auto_Test.TurretAction(camera,turret)) //AUTO-AIM
+             //   .stopAndAdd(new DECODE_9_Ball_Auto_Test.TurretAction(camera,turret)) //AUTO-AIM
                 //   .stopAndAdd(new DECODE_9_Ball_Auto_Test.FlyWheelAction(flywheel,flywheel2,0)) //FLYWHEEL OFF
                 .stopAndAdd(new DECODE_9_Ball_Auto_Test.ShooterAction(push,block))//LIFT BALL INTO SHOOTER
                 .stopAndAdd(new DECODE_9_Ball_Auto_Test.IntakeAction(intake,0))
@@ -108,7 +108,7 @@ public class DECODE_9_Ball_Auto_Test extends LinearOpMode {
                 .waitSeconds(.1)
                 .strafeToLinearHeading(new Vector2d(-23.55,23.5*R), Math.toRadians(135+A2))
                 .stopAndAdd(new DECODE_9_Ball_Auto_Test.FlyWheelAction(flywheel,flywheel2,0.85)) //FLYWHEEL ON
-                .stopAndAdd(new DECODE_9_Ball_Auto_Test.TurretAction(camera,turret)) //AUTO-AIM
+              //  .stopAndAdd(new DECODE_9_Ball_Auto_Test.TurretAction(camera,turret)) //AUTO-AIM
                 .stopAndAdd(new DECODE_9_Ball_Auto_Test.ShooterAction(push,block))//LIFT BALL INTO SHOOTER
                 .waitSeconds(.2)
                 .stopAndAdd(new DECODE_9_Ball_Auto_Test.IntakeAction(intake,0.6))
@@ -135,7 +135,7 @@ public class DECODE_9_Ball_Auto_Test extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(11.7,45*R), Math.toRadians(90+A))
                 .strafeToLinearHeading(new Vector2d(-23.55,23.5*R), Math.toRadians(135+A2))
                 .stopAndAdd(new DECODE_9_Ball_Auto_Test.FlyWheelAction(flywheel,flywheel2,0.85)) //FLYWHEEL ON
-                .stopAndAdd(new DECODE_9_Ball_Auto_Test.TurretAction(camera,turret)) //AUTO-AIM
+               // .stopAndAdd(new DECODE_9_Ball_Auto_Test.TurretAction(camera,turret)) //AUTO-AIM
                 .stopAndAdd(new DECODE_9_Ball_Auto_Test.ShooterAction(push,block))//LIFT BALL INTO SHOOTER
                 .waitSeconds(.2)
                 .stopAndAdd(new DECODE_9_Ball_Auto_Test.IntakeAction(intake,0.6))
@@ -171,6 +171,7 @@ public class DECODE_9_Ball_Auto_Test extends LinearOpMode {
         Action Shoot6A = Shoot6.build();
         Action Intake9A = Intake9.build();
         Action Shoot9A = Shoot9.build();
+        Action TurretAction = new TurretAction(camera,turret);
 
 
         waitForStart();
@@ -178,6 +179,8 @@ public class DECODE_9_Ball_Auto_Test extends LinearOpMode {
         if (isStopRequested()) return;
 
         Actions.runBlocking(
+                new ParallelAction(
+                        TurretAction,
                 new SequentialAction( //PUT ALL ACTIONS BELOW
                         InitializeWorldA,
                         Shoot3A,
@@ -193,6 +196,7 @@ public class DECODE_9_Ball_Auto_Test extends LinearOpMode {
                         Shoot9A
 
 
+                )
                 )
         );
 
