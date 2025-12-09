@@ -31,6 +31,25 @@ public class Turret {
         }
         turret.setPower(power);
     }
+    public void reset()
+    {
+        double curPos= turret.getCurrentPosition();
+        double power=0;
+        while (curPos < -20 || curPos > 20)
+        {
+            if (curPos>0)
+            {
+                power=-curPos/667;
+            }
+            else
+            {
+                power=curPos/667;
+            }
+            turret.setPower(power);
+
+        }
+
+    }
     public void status(Telemetry telemetry){
         telemetry.addData("turretPos",turret.getCurrentPosition());
     }

@@ -291,7 +291,7 @@ public class DECODE_9_Ball_Auto_Test extends LinearOpMode {
     public class TurretAction implements Action {
         DcMotorEx turret;
         Camera camera;
-        long timeSnapshot = System.currentTimeMillis();
+      //  long timeSnapshot = System.currentTimeMillis();
 
         double kP =-.05;
         double maxPower =.3;
@@ -304,8 +304,8 @@ public class DECODE_9_Ball_Auto_Test extends LinearOpMode {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             camera.update(telemetry);
-            timeSnapshot = System.currentTimeMillis();
-            while (System.currentTimeMillis() < (timeSnapshot+500)) {
+     //       timeSnapshot = System.currentTimeMillis();
+  //          while (System.currentTimeMillis() < (timeSnapshot+500)) {
                 turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 double power = camera.getXError() * kP;
                 if (Math.abs(power) > maxPower){
@@ -319,8 +319,8 @@ public class DECODE_9_Ball_Auto_Test extends LinearOpMode {
                 }
                 turret.setPower(power);
                 camera.update(telemetry);
-            }
-            turret.setPower(0);
+            //     }
+
             return false;
         }
     }

@@ -42,6 +42,11 @@ public class SubsystemBased extends LinearOpMode {
             boolean x = gamepad1.x;
             boolean back = gamepad1.back && !previousGamepad1.back;
             boolean b = gamepad1.b;
+            boolean YB=gamepad1.y;
+            boolean AB=gamepad1.a;
+            boolean dpadD = gamepad1.dpad_down;
+            boolean RSB = gamepad1.right_stick_button;
+
             previousGamepad1.copy(gamepad1);
             if (back){
                 switch (teamColor.getColor()){
@@ -54,17 +59,25 @@ public class SubsystemBased extends LinearOpMode {
                 }
             }
             drivetrain.run(gamepad1.left_stick_x,gamepad1.left_stick_y, gamepad1.right_stick_x,1-(gamepad1.left_trigger/2));
-            if (LB){
+            if (LB) {
                 switch (flyWheel.getState()){
-                    case OFF:
-                        flyWheel.setState(FlyWheel.States.ON);
-                        break;
+
                     case ON:
                         flyWheel.setState(FlyWheel.States.OFF);
                         break;
+                    case OFF:
+                        flyWheel.setState(FlyWheel.States.ON);
+                        break;
                 }
             }
-            if (RB | (gamepad1.right_trigger > 0.1 & colorsensors.BallDetected() & flyWheel.getState() == FlyWheel.States.ON)){
+            if (YB && !previousGamepad1.aWasPressed()){
+                flyWheel.add();
+            }
+            if (AB && !previousGamepad1.aWasPressed()){
+
+                flyWheel.sub();
+            }
+            if (RB || (gamepad1.right_trigger > 0.1 && colorsensors.BallDetected() && flyWheel.getState() == FlyWheel.States.ON)){
                 transfer.setState(Transfer.States.SHOOTING);
             }
             if((transfer.getStates() != Transfer.States.SHOOTING) & !x & !b) {
@@ -79,14 +92,31 @@ public class SubsystemBased extends LinearOpMode {
             else {
                 intake.setPower(0);
             }
+            /*
+            if(dpadD)
+            {
+                dpadD = !dpadD;
+            }
+            if (previousGamepad1.dpadDownWasPressed() && gamepad1.dpadDownWasPressed()) {
+                int switcher=1;
 
+                turret.run(camera.getXError());
+            }
+            else {
 
+                turret.run(0);
+            }
+            */
+
+            if (RSB) {
+                turret.reset();
+            }
             flyWheel.run();
             camera.update(telemetry);
             camera.setColor(teamColor.getColor());
-            turret.run(camera.getXError());
             turret.status(telemetry);
             intake.run();
+            turret.run(camera.getXError());
             transfer.run(telemetry);
             teamColor.status(telemetry);
             flyWheel.status(telemetry);

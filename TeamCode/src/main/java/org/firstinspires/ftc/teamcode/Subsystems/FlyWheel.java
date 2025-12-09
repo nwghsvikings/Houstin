@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -16,9 +18,8 @@ public class FlyWheel {
    States currentState = States.OFF;
     DcMotorEx flywheel;
     DcMotorEx flywheel2;
-    public static double maxPower = 1.0;
-    public static double targetVelocity=1000;
-    public static double kP = 0.005;
+    public static double maxPower = .5;
+    public static double increment = .05;
     public FlyWheel(HardwareMap hardwareMap){
         flywheel = hardwareMap.get(DcMotorEx.class,"shooter2");
         flywheel2 = hardwareMap.get(DcMotorEx.class,"shooter");
@@ -31,17 +32,37 @@ public class FlyWheel {
     public States getState(){
         return currentState;
     }
-    public void run(){
-        double power=0.0;
-        double error=targetVelocity-flywheel.getVelocity();
-        switch (currentState){
+    public void add(){
+        if (maxPower <= .95 )
+        {
+            maxPower += increment;
+        }
+        else{
+            maxPower = 1;
+        }
+    }
+    public void sub(){
+        if(maxPower >=.05)
+        {
+            maxPower -= increment;
+        }
+        else {
+            maxPower = 0;
+        }
+    }
+    public void run() {
+        double power = 0.5;
+
+        switch (currentState) {
             case ON:
-                power = kP * error;
+                power = maxPower;
                 break;
             case OFF:
-               power = 0;
+                power = 0;
                 break;
         }
+
+
         if(Math.abs(power)>maxPower)
         {
             power=Math.signum(power)*maxPower;
@@ -51,6 +72,9 @@ public class FlyWheel {
     }
     public void status(Telemetry telemetry){
         telemetry.addData("CurrentVelocity",flywheel.getVelocity());
+        telemetry.addData("Power",flywheel.getPower());
+        telemetry.addData("MaxPower",maxPower);
     }
 
 }
+
