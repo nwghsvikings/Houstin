@@ -31,6 +31,7 @@ public class SubsystemBased extends LinearOpMode {
         ColorSensors colorsensors = new ColorSensors(hardwareMap);
         if (isStopRequested()) return;
         Gamepad previousGamepad1 = new Gamepad();
+        boolean ai = true;
         while (opModeIsActive()) {
 
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
@@ -39,17 +40,17 @@ public class SubsystemBased extends LinearOpMode {
             boolean LB = gamepad1.left_bumper && !previousGamepad1.left_bumper;
             boolean RT = gamepad1.right_trigger > 0.1 && previousGamepad1.right_trigger < 0.1;
             boolean LT = gamepad1.left_trigger > 0.1 && previousGamepad1.left_trigger < 0.1;
+            boolean dpadDown = !previousGamepad1.dpadDownWasPressed() && gamepad1.dpadDownWasPressed();
             boolean x = gamepad1.x;
             boolean back = gamepad1.back && !previousGamepad1.back;
             boolean b = gamepad1.b;
-            boolean YB=gamepad1.y;
-            boolean AB=gamepad1.a;
-            boolean dpadD = gamepad1.dpad_down;
+            boolean YB = gamepad1.y;
+            boolean AB = gamepad1.a;
             boolean RSB = gamepad1.right_stick_button;
 
             previousGamepad1.copy(gamepad1);
-            if (back){
-                switch (teamColor.getColor()){
+            if (back) {
+                switch (teamColor.getColor()) {
                     case RED:
                         teamColor.setColor(TeamColor.Colors.BLUE);
                         break;
@@ -58,9 +59,9 @@ public class SubsystemBased extends LinearOpMode {
                         break;
                 }
             }
-            drivetrain.run(gamepad1.left_stick_x,gamepad1.left_stick_y, gamepad1.right_stick_x,1-(gamepad1.left_trigger/2));
+            drivetrain.run(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, 1 - (gamepad1.left_trigger / 2));
             if (LB) {
-                switch (flyWheel.getState()){
+                switch (flyWheel.getState()) {
 
                     case ON:
                         flyWheel.setState(FlyWheel.States.OFF);
@@ -70,53 +71,43 @@ public class SubsystemBased extends LinearOpMode {
                         break;
                 }
             }
-            if (YB && !previousGamepad1.aWasPressed()){
+            if (YB && !previousGamepad1.aWasPressed()) {
                 flyWheel.add();
             }
-            if (AB && !previousGamepad1.aWasPressed()){
+            if (AB && !previousGamepad1.aWasPressed()) {
 
                 flyWheel.sub();
             }
-            if (RB || (gamepad1.right_trigger > 0.1 && colorsensors.BallDetected() && flyWheel.getState() == FlyWheel.States.ON)){
+            if (RB || (gamepad1.right_trigger > 0.1 && colorsensors.BallDetected() && flyWheel.getState() == FlyWheel.States.ON)) {
                 transfer.setState(Transfer.States.SHOOTING);
             }
-            if((transfer.getStates() != Transfer.States.SHOOTING) & !x & !b) {
+            if ((transfer.getStates() != Transfer.States.SHOOTING) & !x & !b) {
                 intake.setPower(gamepad1.right_trigger);
-            }
-            else if (x) {
+            } else if (x) {
                 intake.setPower(1.0);
-            }
-            else if (b & !x & gamepad1.right_trigger < 0.1) {
+            } else if (b & !x & gamepad1.right_trigger < 0.1) {
                 intake.setPower(-1.0);
-            }
-            else {
+            } else {
                 intake.setPower(0);
             }
-            /*
-            if(dpadD)
-            {
-                dpadD = !dpadD;
+            if (dpadDown) {
+                ai = !ai;
             }
-            if (previousGamepad1.dpadDownWasPressed() && gamepad1.dpadDownWasPressed()) {
-                int switcher=1;
-
+            if(ai)
+            {
                 turret.run(camera.getXError());
             }
             else {
-
                 turret.run(0);
             }
-            */
-
             if (RSB) {
-                turret.reset();
+                turret.reset2();
             }
             flyWheel.run();
             camera.update(telemetry);
             camera.setColor(teamColor.getColor());
             turret.status(telemetry);
             intake.run();
-            turret.run(camera.getXError());
             transfer.run(telemetry);
             teamColor.status(telemetry);
             flyWheel.status(telemetry);
@@ -124,6 +115,7 @@ public class SubsystemBased extends LinearOpMode {
             telemetry.addData("rx",rx);
             colorsensors.status(telemetry);
             telemetry.addData("Ball Detected:", colorsensors.BallDetected());
+            telemetry.addData("AI",ai);
             drivetrain.status(telemetry);
             telemetry.update();
         }

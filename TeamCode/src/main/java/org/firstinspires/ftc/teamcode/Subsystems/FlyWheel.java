@@ -18,7 +18,7 @@ public class FlyWheel {
    States currentState = States.OFF;
     DcMotorEx flywheel;
     DcMotorEx flywheel2;
-    public static double maxPower = .5;
+    public static double maxPower = .8;
     public static double increment = .05;
     public FlyWheel(HardwareMap hardwareMap){
         flywheel = hardwareMap.get(DcMotorEx.class,"shooter2");
