@@ -40,13 +40,12 @@ public class SubsystemBased extends LinearOpMode {
             boolean LB = gamepad1.left_bumper && !previousGamepad1.left_bumper;
             boolean RT = gamepad1.right_trigger > 0.1 && previousGamepad1.right_trigger < 0.1;
             boolean LT = gamepad1.left_trigger > 0.1 && previousGamepad1.left_trigger < 0.1;
-            boolean dpadDown = !previousGamepad1.dpadDownWasPressed() && gamepad1.dpadDownWasPressed();
-            boolean x = gamepad1.x;
+            boolean x = !previousGamepad1.xWasPressed() && gamepad1.xWasPressed();
             boolean back = gamepad1.back && !previousGamepad1.back;
             boolean b = gamepad1.b;
             boolean YB = gamepad1.y;
             boolean AB = gamepad1.a;
-            boolean RSB = gamepad1.right_stick_button;
+            boolean RSB = gamepad1.right_stick_button && !previousGamepad1.right_stick_button;
 
             previousGamepad1.copy(gamepad1);
             if (back) {
@@ -81,16 +80,14 @@ public class SubsystemBased extends LinearOpMode {
             if (RB || (gamepad1.right_trigger > 0.1 && colorsensors.BallDetected() && flyWheel.getState() == FlyWheel.States.ON)) {
                 transfer.setState(Transfer.States.SHOOTING);
             }
-            if ((transfer.getStates() != Transfer.States.SHOOTING) & !x & !b) {
+            if ((transfer.getStates() != Transfer.States.SHOOTING) & !b) {
                 intake.setPower(gamepad1.right_trigger);
-            } else if (x) {
-                intake.setPower(1.0);
-            } else if (b & !x & gamepad1.right_trigger < 0.1) {
+            } else if (b & gamepad1.right_trigger < 0.1) {
                 intake.setPower(-1.0);
             } else {
                 intake.setPower(0);
             }
-            if (dpadDown) {
+            if (x) {
                 ai = !ai;
             }
             if(ai)
@@ -101,7 +98,7 @@ public class SubsystemBased extends LinearOpMode {
                 turret.run(0);
             }
             if (RSB) {
-                turret.reset2();
+                turret.doneResetting = !turret.doneResetting;
             }
             flyWheel.run();
             camera.update(telemetry);
